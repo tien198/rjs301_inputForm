@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Input from "./Input";
+import { hasMinLength, isEmail, isNotEmpty } from "../util/validation";
 
 export default function Login() {
   const [inputVals, setInputVals] = useState({
@@ -12,7 +14,11 @@ export default function Login() {
 
   const isEmailInvalid =
     isEdited.email &&
-    !inputVals.email.includes('@')
+    !isEmail(inputVals.email) ||
+    !isNotEmpty(inputVals.email)
+  const isPasswordInvalid =
+    isEdited.password &&
+    !hasMinLength(inputVals.password, 6)
 
   function onChangeInput(identify, value) {
     setInputVals(prev => ({
@@ -37,18 +43,18 @@ export default function Login() {
       <h2>Login</h2>
 
       <div className="control-row">
-        <div className="control no-margin">
-          <label htmlFor="email">Email</label>
-          <input value={inputVals.email} onChange={e => { onChangeInput('email', e.target.value) }}
-            onBlur={e => { onBlur('email') }} id="email" type="email" name="email" />
-          <div className='control-error'>{isEmailInvalid && <p>Please enter a valid email address.</p>}</div>
-        </div>
+        <Input label='Email' id='email' name='email'
+          error={isEmailInvalid && 'Please enter a valid email'}
+          value={inputVals.email}
+          onChange={e => { onChangeInput('email', e.target.value) }}
+          onBlur={e => { onBlur('email') }} />
 
-        <div className="control no-margin">
-          <label htmlFor="password">Password</label>
-          <input value={inputVals.password} onChange={e => { onChangeInput('password', e.target.value) }}
-            onBlur={e => { onBlur('password') }} id="password" type="password" name="password" />
-        </div>
+        <Input label='Password' id='password' type="password" name="password"
+          error={isPasswordInvalid && 'Password must be greater than 6 characters'}
+          value={inputVals.password}
+          onChange={e => { onChangeInput('password', e.target.value) }}
+          onBlur={e => { onBlur('password') }} />
+
       </div>
 
       <p className="form-actions">

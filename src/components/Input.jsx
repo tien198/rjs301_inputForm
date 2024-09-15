@@ -1,11 +1,13 @@
 import React from 'react';
 
-function Input({ label, id, type, name, error, ...props }) {
+function Input({ label, id, name, error, ...props }) {
     return (
-        <div className="control">
+        <div className="control no-margin">
             <label htmlFor={id}>{label}</label>
-            <input id={id} type={type} name={name} {...props} required />
-            <div className="control-error">{error && <p>{error}</p>}</div>
+            <input id={id} name={name} {...props} />
+            <div className='control-error'>
+                {error && <p>{error}</p>}
+            </div>
         </div>
     );
 }

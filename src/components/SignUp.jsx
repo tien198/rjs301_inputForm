@@ -1,35 +1,37 @@
 import { useState } from "react"
-import Input from "./Input"
 
 export default function Signup() {
-  const [isConfirmPassword, setIsConfirmPassword] = useState(true)
+  const [isConfirmPassword, setIsConfirmPassword] = useState(false)
 
   function onSubmit(e) {
     e.preventDefault()
     const fd = new FormData(e.target)
-    const acquisition = fd.getAll('acquisition')
-
     const data = Object.fromEntries(fd.entries())
-    data.acquisition = acquisition
+    data.acquisition = fd.getAll('acquisition')
 
-    if (data['confirm-password'] != data['password']) {
-      setIsConfirmPassword(false)
+    if (data['password'] !== data['confirm-password']) {
+      setIsConfirmPassword(true)
       return
     }
-    console.log('send http');
-    setIsConfirmPassword(true)
+    setIsConfirmPassword(false)
+    console.log(data);
 
   }
-
   return (
     <form onSubmit={onSubmit}>
       <h2>Welcome on board!</h2>
       <p>We just need a little bit of data from you to get you started 🚀</p>
 
-      <Input label='Email' id='email' name='email' type='email' required />
+      <div className="control">
+        <label htmlFor="email">Email</label>
+        <input id="email" type="email" name="email" required />
+      </div>
+
       <div className="control-row">
-        <Input label='Password' id='password' name='password' type='password' required />
-        <Input label='Confirm Password' id='confirm-password' name='confirm-password' type='password' required />
+        <div className="control">
+          <label htmlFor="password">Password</label>
+          <input id="password" type="password" name="password" required minLength={6} />
+        </div>
 
         <div className="control">
           <label htmlFor="confirm-password">Confirm Password</label>
@@ -37,8 +39,9 @@ export default function Signup() {
             id="confirm-password"
             type="password"
             name="confirm-password"
+            required
           />
-          <div className="control-error">{!isConfirmPassword && 'Please type a confirm password!'}</div>
+          <div className="control-error">{isConfirmPassword && <p>Please type a confirm password</p>}</div>
         </div>
       </div>
 
